@@ -42,7 +42,7 @@ function run_in_rootfs()
 }
 run_in_rootfs /var/lib/dpkg/info/dash.preinst install
 run_in_rootfs dpkg --configure -a
-run_in_rootfs useradd -p \"\" -m -U $NEW_USER
+run_in_rootfs useradd -p ${NEW_USER_PW} -m -U $NEW_USER -G sudo
 
 #
 # SDCARD CREATION
