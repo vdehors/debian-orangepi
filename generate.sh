@@ -58,14 +58,14 @@ sync
 sudo dd if=u-boot/u-boot-sunxi-with-spl.bin of=${SDCARD} bs=1024 seek=8 conv=notrunc
 sync
 # Write Part 1 : Linux and DTB
-sudo mkfs.ext4 ${SDCARDP1}
+echo y | sudo mkfs.ext4 ${SDCARDP1}
 sudo mount ${SDCARDP1} /mnt
 sudo cp linux-stable/arch/arm/boot/zImage /mnt/
 sudo cp linux-stable/arch/arm/boot/dts/*.dtb /mnt/
 sudo cp boot.scr /mnt/boot.scr
 sudo umount /mnt
 # Write Part 2 : Rootfs Debian
-sudo mkfs.ext4 ${SDCARDP2}
+echo y | sudo mkfs.ext4 ${SDCARDP2}
 sudo mount ${SDCARDP2} /mnt
 sudo rsync -aP rootfs/ /mnt/
 sudo umount /mnt
