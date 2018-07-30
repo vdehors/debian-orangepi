@@ -2,3 +2,5 @@ boot.scr
 linux-stable
 u-boot
 rootfs
+overlay
+config.env.priv

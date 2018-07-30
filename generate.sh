@@ -44,7 +44,22 @@ run_in_rootfs /var/lib/dpkg/info/dash.preinst install
 run_in_rootfs dpkg --configure -a
 run_in_rootfs useradd -p ${NEW_USER_PW} -m -U $NEW_USER -G sudo -s /bin/bash
 
-sudo install -m 644 files/etc/network/interfaces rootfs/etc/network/interfaces
+#
+# ROOTFS CUSTOMIZATION
+#
+sudo rsync -rlptD overlay/ rootfs/
+
+# Default permissions of all overlay files is root:root with same mode as the original file
+# Others permissions can be set using the "permissions" file (see overlay/README)
+while read -r custom_perm
+do
+	custom_owner_group=$(echo ${custom_perm} | cut -d' ' -f1)
+	custom_mode=$(echo ${custom_perm} | cut -d' ' -f2)
+	custom_file=$(echo ${custom_perm} | cut -d' ' -f3-)
+
+	run_in_rootfs chown ${custom_owner_group} "${custom_file}"
+	run_in_rootfs chmod ${custom_mode} "${custom_file}"
+done < overlay/permissions
 
 #
 # SDCARD CREATION
