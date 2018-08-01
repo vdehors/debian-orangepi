@@ -14,7 +14,8 @@ esac
 #
 git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git -b ${KERNEL_VERSION}
 cd linux-stable
-make ARCH=arm sunxi_defconfig
+cp ../kernel_config .config
+make ARCH=arm oldconfig
 make -j8 ARCH=arm CROSS_COMPILE=${CROSS_COMPILE} LOADADDR=${LOADADDR} zImage sun8i-h2-plus-orangepi-zero.dtb modules
 cd -
 
@@ -43,6 +44,11 @@ function run_in_rootfs()
 run_in_rootfs /var/lib/dpkg/info/dash.preinst install
 run_in_rootfs dpkg --configure -a
 run_in_rootfs useradd -p ${NEW_USER_PW} -m -U $NEW_USER -G sudo -s /bin/bash
+
+# Deploy kernel modules
+cd linux-stable
+sudo make ARH=arm CROSS_COMPILE=${CROSS_COMPILE} INSTALL_MOD_PATH=$(pwd)/../rootfs/ modules_install
+cd -
 
 #
 # ROOTFS CUSTOMIZATION
